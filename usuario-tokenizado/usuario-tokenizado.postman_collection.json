@@ -1,0 +1,136 @@
+{
+    "info": {
+        "name": "Usuario Tokenizado API",
+        "_postman_id": "usuario-tokenizado-collection",
+        "description": "API para gestión de usuarios con autenticación por token.\n\nEndpoints:\n- GET /api/users → Obtener los 10 primeros usuarios\n- POST /api/users → Crear usuario\n- POST /api/users/login → Iniciar sesión\n- PUT /api/users/update-name → Actualizar nombre",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Obtener primeros 10 usuarios",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/users",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "users"]
+                },
+                "description": "Devuelve los primeros 10 usuarios registrados."
+            },
+            "response": []
+        },
+        {
+            "name": "Crear usuario",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Juan Pérez\",\n    \"email\": \"juan@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/users",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "users"]
+                },
+                "description": "Crea un nuevo usuario. La contraseña se almacena hasheada."
+            },
+            "response": []
+        },
+        {
+            "name": "Iniciar sesión",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const response = pm.response.json();",
+                            "if (response.success && response.data) {",
+                            "    pm.collectionVariables.set('token', response.data);",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"juan@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/users/login",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "users", "login"]
+                },
+                "description": "Inicia sesión y devuelve un token de sesión. El token se guarda automáticamente en la variable de colección {{token}}."
+            },
+            "response": []
+        },
+        {
+            "name": "Actualizar nombre",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"token\": \"{{token}}\",\n    \"name\": \"Juan Pérez Actualizado\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/users/update-name",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "users", "update-name"]
+                },
+                "description": "Actualiza el nombre del usuario autenticado. Requiere el token obtenido al iniciar sesión."
+            },
+            "response": []
+        }
+    ]
+}
